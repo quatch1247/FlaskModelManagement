@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM 모델 모의 응답</title>
+</head>
+<body>
+    <h1>LLM 모델 모의 응답</h1>
+    <form id="queryForm">
+        <label for="user_id">유저 아이디:</label>
+        <input type="text" id="user_id" name="user_id" required><br><br>
+
+        <label for="llm_type">LLM Type:</label>
+        <select id="llm_type" name="llm_type" required>
+            <option value="facility">시설관리</option>
+            <option value="legal">법률</option>
+        </select><br><br>
+
+        <label for="query">질의:</label>
+        <textarea id="query" name="query" required></textarea><br><br>
+
+        <button type="submit">제출</button>
+    </form>
+
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+
+    <script>
+        document.getElementById('queryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const user_id = document.getElementById('user_id').value;
+            const llm_type = document.getElementById('llm_type').value;
+            const query = document.getElementById('query').value;
+
+            fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    llm_type: llm_type,
+                    query: query
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
